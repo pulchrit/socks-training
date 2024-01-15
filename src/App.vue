@@ -8,6 +8,11 @@
   const inStock = ref(true)
   // inventory was just to demonstrate v-else-if
   // const inventory = ref(8)
+  const details = ref(['50% cotton', '30% wool', '20% polyester'])
+  const variants = ref([
+    { id: 2234, color: 'green' },
+    { id: 2235, color: 'blue' },
+  ])
 
 </script>
 
@@ -32,8 +37,20 @@
         <!-- <p v-if="inventory > 10">In Stock</p> -->
         <p v-if="inStock">In stock</p>
         <p v-else>Out of stock</p>
-
-      </div>
+        <ul>
+          <!-- loop the details state array or any iterable and render a list -->
+          <li v-for="detail in details">{{ detail }}</li>
+        </ul>
+        <!-- need to set a key on each element just like in react -->
+        <!-- v-if will always be processed first, if you want a v-for to 
+          process before a v-if you have to put them on nested and separate
+          elements
+         -->
+        <div v-for="variant in variants" :key="variant.id">
+          {{ variant.color }}
+        </div>
+          
+        </div>
     </div>
   </div>
 </template>
