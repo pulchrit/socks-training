@@ -5,7 +5,7 @@
   import socksGreenImage from '@/assets/images/socks_green.jpeg'
   import socksBlueImage from '@/assets/images/socks_blue.jpeg'
 
-  // define props
+  // define props passed in from parent
   // defineProps is a compiler macro and DOES NOT need to be imported
   const props = defineProps({
     premium: {
@@ -13,6 +13,11 @@
       required: true,
     }
   })
+
+  // define custom events to pass data back to parent
+  // you can pass multiple custom events in the array
+  // defineEmits is also a compiler macro, so it doesn't need to be imported
+  const emit = defineEmits(['add-to-cart'])
 
   // create state
   const product = ref("Socks")
@@ -38,8 +43,9 @@
   const shipping = computed(() => props.premium ? 'Free' : 2.99)
 
   // define event handlers
-  //  event arg is optional, (event) => cart += 1
-  const addToCart = () => cart += 1
+  // emit the event from the child so that the parent can implement the event on its state
+  // the second, third, etc. args are the payload/data we want to send to the event handler
+  const addToCart = () => emit("add-to-cart", variants.value[selectedVariant.value].id)
 
   const updateVariant = (index) => {
     selectedVariant.value = index
