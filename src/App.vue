@@ -1,17 +1,25 @@
 <script setup>
   // setup executes once!
   // state within it is tracked and updated
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import ProductDisplay from '@/components/ProductDisplay.vue'
   
+  // pull data from pretend db to initialize the cart via onMounted lifecycle hook
   const cart = ref([])
   const premium = ref(true)
+
+  // to get the pretend db working, you need to run from the terminal: npx json-server db.json
+  // this will prompt you to install json-server package if you do not already have it
+  onMounted(() => {
+    fetch('http://localhost:3000/cart')
+    .then(resp => resp.json())
+    .then(data => cart.value = data.content)
+  })
 
   // event handlers
   // updateCart listens for the add-to-cart event from its child component
   // the parameters are passed as args from the emit function in the child
   const updateCart = (id) => cart.value.push(id)
-
 </script>
 
 <template>
