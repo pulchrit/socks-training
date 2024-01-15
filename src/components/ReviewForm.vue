@@ -1,6 +1,9 @@
 <script setup>
   import { reactive } from 'vue'
 
+  // define custom submit event to send to parent
+  const emit = defineEmits(['review-submitted'])
+
   // use reactive when you want to track an object because all of the object's
   // properties will change together. 
   // Here name, content, and rating will be used together in the review form
@@ -10,10 +13,31 @@
     rating: null,
   })
 
+  // define submit event handler
+  const onSubmit = () => {
+    // We don't want the data we send to the parent to be reactive! So, we need to 
+    // stringify and parse it!
+    const reviewData = JSON.parse(JSON.stringify(review))
+    // then you emit your custom event, so the parent can subscribe and receive it
+    emit('review-submitted', reviewData)
+    // then clear the form fields
+    review.name = ''
+    review.content = ''
+    review.rating = null
+    // or you can use Object.assign
+    // Object.assign(review, {
+    //   name: '',
+    //   content: '',
+    //   rating: null,
+    // })
+  }
+
 </script>
 
 <template>
-  <form class="review-form">
+  <!-- listen for @submit event, add .prevent to prevent default form
+    submission and instead call our onSubmit callback -->
+  <form class="review-form" @submit.prevent="onSubmit">
       <h3>Leave a review</h3>
       <label for="name">Name:</label>
       <!-- 

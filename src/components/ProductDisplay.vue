@@ -4,6 +4,8 @@
   import { ref, computed } from 'vue'
   import socksGreenImage from '@/assets/images/socks_green.jpeg'
   import socksBlueImage from '@/assets/images/socks_blue.jpeg'
+  import ReviewForm from '@/components/ReviewForm.vue'
+  import ReviewList from '@/components/ReviewList.vue'
 
   // define props passed in from parent
   // defineProps is a compiler macro and DOES NOT need to be imported
@@ -28,6 +30,7 @@
     { id: 2234, color: 'green', image: socksGreenImage, quantity: 50 },
     { id: 2235, color: 'blue', image: socksBlueImage, quantity: 0 },
   ])
+  const reviews = ref([])
 
   // create computed state
   // computed proprty is like derived state, it is automatically updated when 
@@ -49,6 +52,11 @@
 
   const updateVariant = (index) => {
     selectedVariant.value = index
+  }
+
+  const addReview = (review) => {
+    reviews.value.push(review)
+    console.log(reviews.value)
   }
   // inventory was just to demonstrate v-else-if
   // const inventory = ref(8)
@@ -117,4 +125,6 @@
         </div>
     </div>
   </div>
+  <ReviewList :reviews="reviews"></ReviewList>
+  <ReviewForm @review-submitted="addReview"></ReviewForm>
 </template>
