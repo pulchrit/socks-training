@@ -1,8 +1,7 @@
 <script setup>
-  // Review list receives an reviews array prop
-  // since we just use this prop in the template, but don't need to do anything
-  // with it in the <script>, we don't need to define a new variable for the prop, 
-  // we can just use it in the <template>
+  // We do need define Props when we used NAMED slots to pass two separate 
+  // component/tempaltes to this component (similar to React's render props)
+  
   defineProps({
     reviews: {
       type: Array,
@@ -13,13 +12,15 @@
 
 <template>
   <div class="review-container">
-    <h3>Reviews:</h3>
+    <h3>
+      <!-- named slot for heading -->
+      <slot name="heading"></slot>
+    </h3>
     <ul>
-      <!--  reviews prop is made available to the template automatically -->
       <li v-for="(review, index) in reviews" :key="index">
-        <span>{{ review.name }} gave this {{  review.rating }} stars</span>
-        <br>
-        <span>{{ review.content }}</span>
+        <!-- name slot for item -->
+        <!-- pass review to parent by binding the :review value for this particular review -->
+        <slot name="item" :review="review"></slot>
       </li>
     </ul>
   </div>

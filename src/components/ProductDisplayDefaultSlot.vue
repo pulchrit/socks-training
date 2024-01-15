@@ -125,18 +125,16 @@
         </div>
     </div>
   </div>
-  <ReviewList :reviews="reviews">
-    <!-- pass two named template elements to fill in the slots in ReviewList -->
-    <template #headings>Reviews: </template>
-    <template #item="slotProps">
-      <!-- the child component ReviewList needs to pass this review variable to 
-       this ProductDisplay parent, so that it can render a specific li item
-        it does that by binding :review in teh child and accessing those props
-       above via "slotProps" -->
-      <span>{{ slotProps.review.name }} gave this {{  slotProps.review.rating }} stars</span>
-      <br/>
-      <span>{{ slotProps.review.content }}</span>
-    </template>
+  <ReviewList>
+    <!-- pass this ul element as a default slot (akin to react's children prop) -->
+    <ul>
+      <!--  reviews prop is made available to the template automatically -->
+      <li v-for="(review, index) in reviews" :key="index">
+        <span>{{ review.name }} gave this {{  review.rating }} stars</span>
+        <br>
+        <span>{{ review.content }}</span>
+      </li>
+    </ul>
   </ReviewList>
   <ReviewForm @review-submitted="addReview"></ReviewForm>
 </template>
