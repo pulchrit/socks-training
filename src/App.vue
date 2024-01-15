@@ -1,28 +1,39 @@
 <script setup>
-  import { ref } from 'vue'
+// setup executes once!
+// state within it is tracked and updated
+  import { ref, computed } from 'vue'
   import socksGreenImage from './assets/images/socks_green.jpeg'
   import socksBlueImage from './assets/images/socks_blue.jpeg'
 
   // create state
   const product = ref("Socks")
-  const image = ref(socksGreenImage)
-  const inStock = ref(true)
-  // inventory was just to demonstrate v-else-if
-  // const inventory = ref(8)
+  const brand = ref('Vue mastery')
+  const selectedVariant = ref(0)
   const details = ref(['50% cotton', '30% wool', '20% polyester'])
   const variants = ref([
-    { id: 2234, color: 'green', image: socksGreenImage },
-    { id: 2235, color: 'blue', image: socksBlueImage },
+    { id: 2234, color: 'green', image: socksGreenImage, quantity: 50 },
+    { id: 2235, color: 'blue', image: socksBlueImage, quantity: 0 },
   ])
-
   const cart = ref(0)
 
-  //  event wrapper is still optional
+  // create computed state
+  // computed proprty is like derived state, it is automatically updated when 
+  // its sub-state changes
+  const title = computed(() => `${brand.value} ${product.value}`)
+
+  const image = computed(() => variants.value[selectedVariant.value].image)
+
+  const inStock = computed(() => variants.value[selectedVariant.value].quantity > 0)
+
+  // define event handlers
+  //  event arg is optional, (event) => cart += 1
   const addToCart = () => cart += 1
 
-  const updateImage = (variantImage) => {
-    image.value = variantImage
+  const updateVariant = (index) => {
+    selectedVariant.value = index
   }
+  // inventory was just to demonstrate v-else-if
+  // const inventory = ref(8)
 </script>
 
 <template>
@@ -36,7 +47,7 @@
         <img v-bind:src="image">
       </div>
       <div class="product-info">
-        <h1>{{ product }}</h1>
+        <h1>{{ title }}</h1>
         <!-- conditional rendering -->
         <!--  instead of v-if/v-else-if/v-else which will render or remove the element,
           you can also use v-show which will display or not display the element. 
@@ -57,11 +68,12 @@
           elements
          -->
         <div 
-          v-for="variant in variants" 
+          v-for="(variant, index) in variants" 
           :key="variant.id"
-          @mouseover="updateImage(variant.image)"
+          @mouseover="updateVariant(index)"
+          class="color-circle"
+          :style="{ backgroundColor: variant.color }"
         >
-          {{ variant.color }}
         </div>
         <!-- verbose syntax is v-on:click, shorthand is @click -->
         <!-- <button class="button" type="button" v-on:click="cart += 1">Add to cart</button> -->
@@ -71,8 +83,30 @@
         <!-- <button class="button" type="button" v-on:click="(event) => { cart += 1 }">Add to cart</button> -->
         <!-- <button class="button" type="button" @click="cart += 1">Add to cart</button> -->
         <!--  or extract event handler to a function -->
-        <button class="button" type="button" @click="addToCart">Add to cart</button>
+        <!-- button :class, the disabledButton is the class we want to assign when inStock is false
+          therefore we use !inStock -->
+        <!-- The regular class and :class binding will be merged automatically by vue -->
+        <!--  You can use :class with an array of class names to apply and compute those
+          values in state -->
+        <button 
+          class="button" 
+          :class="{ disabledButton: !inStock }"
+          type="button"
+          @click="addToCart"
+          :disabled="!inStock"
+        >
+          Add to cart
+        </button>
         </div>
     </div>
   </div>
 </template>
+
+<style>
+/* 
+  Style tag is optional.
+  To use it, just add css and it will be applied to the template as assigned.
+  To scope the styles to just this component, add the scoped attr, <style scoped>
+
+*/
+</style>
