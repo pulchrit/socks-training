@@ -1,6 +1,7 @@
 <script setup>
   import { ref } from 'vue'
   import socksGreenImage from './assets/images/socks_green.jpeg'
+  import socksBlueImage from './assets/images/socks_blue.jpeg'
 
   // create state
   const product = ref("Socks")
@@ -10,14 +11,23 @@
   // const inventory = ref(8)
   const details = ref(['50% cotton', '30% wool', '20% polyester'])
   const variants = ref([
-    { id: 2234, color: 'green' },
-    { id: 2235, color: 'blue' },
+    { id: 2234, color: 'green', image: socksGreenImage },
+    { id: 2235, color: 'blue', image: socksBlueImage },
   ])
 
+  const cart = ref(0)
+
+  //  event wrapper is still optional
+  const addToCart = () => cart += 1
+
+  const updateImage = (variantImage) => {
+    image.value = variantImage
+  }
 </script>
 
 <template>
  <div class="nav-bar"></div>
+ <div class="cart">Cart({{ cart }})</div>
   <div class="product-display">
     <div class="product-container">
       <div class="product-image">
@@ -46,10 +56,22 @@
           process before a v-if you have to put them on nested and separate
           elements
          -->
-        <div v-for="variant in variants" :key="variant.id">
+        <div 
+          v-for="variant in variants" 
+          :key="variant.id"
+          @mouseover="updateImage(variant.image)"
+        >
           {{ variant.color }}
         </div>
-          
+        <!-- verbose syntax is v-on:click, shorthand is @click -->
+        <!-- <button class="button" type="button" v-on:click="cart += 1">Add to cart</button> -->
+        <!--  you can wrap the function in an event wrapper, butit's optional in vue
+          because it will be added automatically by the compiler
+         -->
+        <!-- <button class="button" type="button" v-on:click="(event) => { cart += 1 }">Add to cart</button> -->
+        <!-- <button class="button" type="button" @click="cart += 1">Add to cart</button> -->
+        <!--  or extract event handler to a function -->
+        <button class="button" type="button" @click="addToCart">Add to cart</button>
         </div>
     </div>
   </div>
